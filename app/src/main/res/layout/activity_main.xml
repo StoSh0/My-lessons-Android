@@ -15,11 +15,10 @@
         android:text="@string/button_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/button_ok_margin_top"
         android:id="@+id/buttonOk"
         android:layout_below="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:onClick="clickButtonOk"/>
+        android:layout_alignStart="@+id/editText" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -27,7 +26,7 @@
         android:inputType="textPersonName"
         android:text="@string/edit_text"
         android:ems="10"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
         android:id="@+id/editText"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -38,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonOk"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:textSize="25dp"
+        android:layout_marginTop="@dimen/text_view_margin_top"
+        android:textSize="@dimen/text_view_text_size"
         android:id="@+id/textView" />
 </RelativeLayout>
