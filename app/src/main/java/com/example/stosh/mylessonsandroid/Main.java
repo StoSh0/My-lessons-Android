@@ -2,8 +2,7 @@ package com.example.stosh.mylessonsandroid;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -13,8 +12,6 @@ import butterknife.Unbinder;
 
 public class Main extends AppCompatActivity {
 
-    @BindView(R.id.editText)
-    EditText editText;
     @BindView(R.id.textView)
     TextView textView;
     private Unbinder unbinder;
@@ -27,13 +24,20 @@ public class Main extends AppCompatActivity {
 
     }
 
-    @OnClick(R.id.buttonOk)
-    public void onButtonClick() {
-        if (TextUtils.isEmpty(editText.getText().toString())) {
-            textView.setText(R.string.edit_text_is_null);
-            return;
+    @OnClick({R.id.button_call_time_picker, R.id.button_start, R.id.button_stop})
+    public void onButtonClick(Button button) {
+        switch (button.getId()) {
+            case R.id.button_call_time_picker:
+                textView.setText("button_call_time_picker");
+                break;
+            case R.id.button_start:
+                textView.setText("button_call_time_start");
+                break;
+            case R.id.button_stop:
+                textView.setText("button_call_time_stop");
+                break;
         }
-        textView.setText(editText.getText().toString());
+
     }
 
     @Override

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">My lessons Android</string>
-    <string name="edit_text">Введіть текст</string>
-    <string name="button_ok">Прийняти і вивести текст</string>
-    <string name="text_view">Введіть текст</string>
-    <string name="edit_text_is_null">Ви нічого не ввели, введіть повторно</string>
+
+    <string name="text_view">Якийсь-там текст</string>
+    
+    <string name="button_call_time_picker_text">Call time picker</string>
 </resources>
