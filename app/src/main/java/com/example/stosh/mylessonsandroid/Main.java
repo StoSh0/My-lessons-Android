@@ -9,6 +9,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 public class Main extends AppCompatActivity {
 
@@ -16,12 +17,13 @@ public class Main extends AppCompatActivity {
     EditText editText;
     @BindView(R.id.textView)
     TextView textView;
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
     }
 
@@ -32,5 +34,11 @@ public class Main extends AppCompatActivity {
             return;
         }
         textView.setText(editText.getText().toString());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }
