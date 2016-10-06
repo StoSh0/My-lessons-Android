@@ -19,18 +19,19 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/button_start"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/start" />
+
+        <Button
             android:id="@+id/button_stop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/stop" />
 
-        <Button
-            android:id="@+id/button_start"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/start" />
     </LinearLayout>
 
     <Button
@@ -40,6 +41,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/button_call_time_marginTop"
         android:layout_toStartOf="@id/linear"
+        android:onClick="showDatePickerDialog"
         android:text="@string/button_call_time_text" />
 
     <TextView
@@ -50,4 +52,5 @@
         android:layout_toStartOf="@id/linear"
         android:text="@string/text_view"
         android:textSize="@dimen/text_view_textSize" />
+
 </RelativeLayout>
