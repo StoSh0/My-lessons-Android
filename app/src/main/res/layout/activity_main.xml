@@ -10,42 +10,44 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.stosh.mylessonsandroid.Main">
 
-    <Button
-        android:id="@+id/button_start"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="@dimen/leaner_width"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/button_start_margin_bottom"
-        android:background="@drawable/start" />
+        android:layout_alignParentRight="true"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_stop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/stop" />
+
+        <Button
+            android:id="@+id/button_start"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/start" />
+    </LinearLayout>
 
     <Button
-        android:id="@+id/button_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/button_stop_margin_top"
-        android:background="@drawable/stop" />
-
-    <Button
-        android:id="@+id/button_call_time_picker"
+        android:id="@+id/button_call_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/textView"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/button_stop"
-        android:padding="@dimen/button_call_time_picker_padding"
-        android:text="@string/button_call_time_picker_text" />
+        android:layout_marginTop="@dimen/button_call_time_marginTop"
+        android:layout_toStartOf="@id/linear"
+        android:text="@string/button_call_time_text" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@id/linear"
         android:text="@string/text_view"
-        android:textSize="@dimen/text_view_text_size" />
-
-
+        android:textSize="@dimen/text_view_textSize" />
 </RelativeLayout>

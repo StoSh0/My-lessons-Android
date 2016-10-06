@@ -24,10 +24,10 @@ public class Main extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.button_call_time_picker, R.id.button_start, R.id.button_stop})
+    @OnClick({R.id.button_call_time, R.id.button_start, R.id.button_stop})
     public void onButtonClick(Button button) {
         switch (button.getId()) {
-            case R.id.button_call_time_picker:
+            case R.id.button_call_time:
                 textView.setText("button_call_time_picker");
                 break;
             case R.id.button_start:
