@@ -3,7 +3,5 @@
 
     <string name="button_call_time_text">Call time picker</string>
 
-    <string name="text_view">hh:mm</string>
-    <string name="text_view_setText_button_start">button_call_time_start</string>
-    <string name="text_view_setText_button_stop">button_call_time_stop</string>
+    <string name="text_view">yyyy mm dd</string>
 </resources>
