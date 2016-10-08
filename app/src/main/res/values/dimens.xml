@@ -5,7 +5,7 @@
 
     <dimen name="button_call_time_marginTop">100dp</dimen>
 
-    <dimen name="text_view_textSize">40dp</dimen>
+    <dimen name="text_view_textSize">30dp</dimen>
 
-    <dimen name="leaner_width">300dp</dimen>
+    <dimen name="leaner_width">100dp</dimen>
 </resources>
