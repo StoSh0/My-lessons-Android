@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">My lessons Android</string>
 
-    <string name="button_call_time_text">Call time picker</string>
+    <string name="textView_text">Ваше повідомлення</string>
 
-    <string name="text_view">yyyy mm dd</string>
+    <string name="editText_text">Введіть повідомлення</string>
 </resources>
