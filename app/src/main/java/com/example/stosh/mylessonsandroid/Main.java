@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -20,97 +21,105 @@ import butterknife.Unbinder;
 
 public class Main extends AppCompatActivity {
 
-	public static final int ID_NOTIFICATION = 20;
+    public static final int ID_NOTIFICATION = 20;
 
-	@BindView(R.id.textView)
-	TextView textView;
+    @BindView(R.id.textView)
+    TextView textView;
 
-	private NotificationManager NotificationManager;
-	private Notification Builder;
-	private DatePickerDialog MyDatePicker;
-	private Unbinder Unbinder;
-	private int
-			MyYear = 2016,
-			MyMonth = 10,
-			MyDay = 7;
+    private Calendar calendar;
+    private NotificationManager NotificationManager;
+    private Notification Builder;
+    private DatePickerDialog MyDatePicker;
+    private Unbinder Unbinder;
+    private int
+            MyYear,
+            MyMonth,
+            MyDay;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		Unbinder = ButterKnife.bind(this);
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Unbinder = ButterKnife.bind(this);
+    }
 
-	@OnClick({R.id.button_call_time, R.id.button_start, R.id.button_stop})
-	public void onButtonClick(Button button) {
-		switch (button.getId()) {
-			case R.id.button_call_time:
-				showDataPicker();
-				break;
+    @OnClick({R.id.button_call_time, R.id.button_start, R.id.button_stop})
+    public void onButtonClick(Button button) {
+        switch (button.getId()) {
+            case R.id.button_call_time:
+                showDataPicker();
+                break;
 
-			case R.id.button_start:
-				Builder = new NotificationCompat.Builder(this)
-						.setSmallIcon(R.drawable.start)
-						.setContentTitle("Сповіщення")
-						.setContentText(textView.getText())
-						.setAutoCancel(true)
-						.build();
+            case R.id.button_start:
+                Builder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.start)
+                        .setContentTitle("Сповіщення")
+                        .setContentText(textView.getText())
+                        .setAutoCancel(true)
+                        .build();
 
-				NotificationManager = (NotificationManager)
-						getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationManager = (NotificationManager)
+                        getSystemService(Context.NOTIFICATION_SERVICE);
 
-				NotificationManager.notify(ID_NOTIFICATION, Builder);
-				break;
+                NotificationManager.notify(ID_NOTIFICATION, Builder);
+                break;
 
-			case R.id.button_stop:
-				//NPE fix
-				if (NotificationManager != null) NotificationManager.cancel(ID_NOTIFICATION);
-				break;
-		}
-	}
+            case R.id.button_stop:
+                if (NotificationManager != null) NotificationManager.cancel(ID_NOTIFICATION);
+                break;
+        }
+    }
 
-	private void showDataPicker() {
-		MyDatePicker = new DatePickerDialog(
-				this,
-				getDateSetListener(),
-				MyYear,
-				MyMonth,
-				MyDay
-		);
-		MyDatePicker.show();
-	}
+    private void showDataPicker() {
 
-	private DatePickerDialog.OnDateSetListener getDateSetListener() {
-		return new DatePickerDialog.OnDateSetListener() {
-			@Override
-			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-				MyYear = year;
-				MyMonth = month;
-				MyDay = dayOfMonth;
-				if (textView != null) {
-					textView.setText(
-							String.format(
-									Locale.getDefault(),
-									"Вибрана дата: %y %m %d",
-									MyYear,
-									MyMonth,
-									MyDay
-							)
-					);
-				}
-			}
-		};
-	}
+        calendar = Calendar.getInstance();
+        MyYear = calendar.get(Calendar.YEAR);
+        MyMonth = calendar.get(Calendar.MONTH);
+        MyDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        MyDatePicker = new DatePickerDialog(
+                this,
+                getDateSetListener(),
+                MyYear,
+                MyMonth,
+                MyDay
+        );
+
+        MyDatePicker.getDatePicker().setMinDate(calendar.getTimeInMillis() - 86400000);
+        MyDatePicker.getDatePicker().setMaxDate(calendar.getTimeInMillis() + 86400000);
+        MyDatePicker.show();
+    }
+
+    private DatePickerDialog.OnDateSetListener getDateSetListener() {
+        return new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                MyYear = year;
+                MyMonth = month;
+                MyDay = dayOfMonth;
+                if (textView != null) {
+                    textView.setText(
+                            String.format(
+                                    Locale.getDefault(),
+                                    "Вибрана дата: %d %d %d",
+                                    MyYear,
+                                    MyMonth,
+                                    MyDay
+                            )
+                    );
+                }
+            }
+        };
+    }
 
 
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		Unbinder.unbind();
-		if (MyDatePicker != null) {
-			MyDatePicker.dismiss();
-			MyDatePicker = null;
-		}
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Unbinder.unbind();
+        if (MyDatePicker != null) {
+            MyDatePicker.dismiss();
+            MyDatePicker = null;
+        }
+    }
 }
