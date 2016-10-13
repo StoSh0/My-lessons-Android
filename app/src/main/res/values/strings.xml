@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">My lessons Android</string>
 
-    <string name="textView_text">Ваше повідомлення</string>
+    <string name="textView_text">Лічильник = </string>
+
+    <string name="button_setMessage_text">Прийняти</string>
 
     <string name="editText_text">Введіть повідомлення</string>
 </resources>
