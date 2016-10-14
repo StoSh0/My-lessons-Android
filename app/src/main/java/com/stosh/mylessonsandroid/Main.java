@@ -1,9 +1,10 @@
-package com.example.stosh.mylessonsandroid;
+package com.stosh.mylessonsandroid;
 
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.example.stosh.mylessonsandroid.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +44,7 @@ public class Main extends AppCompatActivity {
     private Unbinder Unbinder;
     private Intent intent;
     private PendingIntent pIntent;
+    private BroadcastReceiver rs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Unbinder = ButterKnife.bind(this);
         createSpinner();
+
     }
 
     @OnClick({R.id.button_start, R.id.button_stop})
@@ -55,16 +60,19 @@ public class Main extends AppCompatActivity {
         switch (button.getId()) {
             case R.id.button_start:
 
-                intent = new Intent(this, CreateNotificationAlert.class);
-
-                intent.setAction("action");
-                intent.putExtra("extra", "extra");
+                intent = new Intent(this, Main.class);
 
                 pIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
                 Log.d("Log", "start");
                 alarm.set(AlarmManager.RTC, System.currentTimeMillis() + 4000, pIntent);
 
+                rs = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        createNotification();
+                    }
+                };
                 break;
             case R.id.button_stop:
                 if (NotificationManager != null) NotificationManager.cancel(ID_NOTIFICATION);
@@ -102,7 +110,7 @@ public class Main extends AppCompatActivity {
         });
     }
 
-    public void  CreateNotification() {
+    public void  createNotification() {
         Builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.start)
                 .setContentTitle("Сповіщення")
