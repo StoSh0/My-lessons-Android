@@ -7,12 +7,11 @@
 
     <dimen name="editText_marginTop">30dp</dimen>
 
-    <dimen name="button_setMessage_marginTop">10dp</dimen>
-
-    <dimen name="spinner_marginTop">50dp</dimen>
+    <dimen name="spinner_marginTop">30dp</dimen>
 
     <dimen name="button_width">100dp</dimen>
     <dimen name="button_height">50dp</dimen>
     <dimen name="button_start">60dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

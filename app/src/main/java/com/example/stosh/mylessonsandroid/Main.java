@@ -1,13 +1,15 @@
 package com.example.stosh.mylessonsandroid;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,10 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,12 +34,13 @@ public class Main extends AppCompatActivity {
     @BindView(R.id.spinner)
     Spinner spinner;
 
-    private String message;
-    private int counter = 0;
+    private int counter = 1;
     private NotificationManager NotificationManager;
     private Notification Builder;
+    private AlarmManager alarm;
     private Unbinder Unbinder;
-    private Timer myTimer;
+    private Intent intent;
+    private PendingIntent pIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,46 +50,22 @@ public class Main extends AppCompatActivity {
         createSpinner();
     }
 
-    @OnClick({R.id.button_setMassage, R.id.button_start, R.id.button_stop})
+    @OnClick({R.id.button_start, R.id.button_stop})
     public void onButtonClick(Button button) {
         switch (button.getId()) {
-            case R.id.button_setMassage:
-                if (TextUtils.isEmpty(editText.getText().toString())) return;
-                message = editText.getText().toString();
-                break;
             case R.id.button_start:
-                if (message != null && counter != 0) {
-                    myTimer = new Timer();
-                    final Handler uiHandler = new Handler();
-                    myTimer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            uiHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    createNotification();
-                                }
-                            });
-                        }
-                    }, 0L, 5L * 1000);
-                    break;
-                } else if (message == null) {
-                    Toast toastNoMessage = Toast.makeText(
-                            getApplicationContext(),
-                            "Ви не ввели повідомлення",
-                            Toast.LENGTH_LONG
-                    );
-                    toastNoMessage.show();
-                } else {
-                    Toast toastNoCounter = Toast.makeText(
-                            getApplicationContext(),
-                            "Ви не ввели к-сть повторень",
-                            Toast.LENGTH_LONG
-                    );
-                    toastNoCounter.show();
-                }
-                break;
 
+                intent = new Intent(this, CreateNotificationAlert.class);
+
+                intent.setAction("action");
+                intent.putExtra("extra", "extra");
+
+                pIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+                Log.d("Log", "start");
+                alarm.set(AlarmManager.RTC, System.currentTimeMillis() + 4000, pIntent);
+
+                break;
             case R.id.button_stop:
                 if (NotificationManager != null) NotificationManager.cancel(ID_NOTIFICATION);
                 counter = 0;
@@ -98,6 +73,7 @@ public class Main extends AppCompatActivity {
                 break;
         }
     }
+
 
     private void createSpinner() {
         ArrayAdapter<?> adapter = ArrayAdapter.createFromResource(
@@ -108,12 +84,14 @@ public class Main extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
-        spinner.setPrompt("Виберіть число повторень");
+        spinner.setPrompt("Виберіть кількість повторень");
         spinner.setSelection(1);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view,
+                                       int position,
+                                       long id) {
                 counter = position + 1;
                 textView.setText("Лічильник = " + counter);
             }
@@ -124,25 +102,23 @@ public class Main extends AppCompatActivity {
         });
     }
 
-    private void createNotification() {
-        textView.setText("Лічильник = " + counter);
+    public void  CreateNotification() {
         Builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.start)
                 .setContentTitle("Сповіщення")
-                .setContentText(message + " " + counter)
+                .setContentText(editText.getText().toString() + " " + counter)
                 .setAutoCancel(true)
+
                 .build();
+
 
         NotificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
 
         NotificationManager.notify(ID_NOTIFICATION, Builder);
-        counter--;
-        if (counter == -1) {
-            NotificationManager.cancel(ID_NOTIFICATION);
-            myTimer.cancel();
-        }
 
+        counter--;
+        textView.setText("Лічильник = " + counter);
     }
 
     @Override

@@ -32,22 +32,6 @@
         android:text="@string/editText_text" />
 
     <Button
-        android:id="@+id/button_setMassage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/button_setMessage_marginTop"
-        android:text="@string/button_setMessage_text" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true" />
-
-    <Button
         android:id="@+id/button_start"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
@@ -63,4 +47,12 @@
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/button_start"
         android:background="@drawable/stop" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/spinner_marginTop" />
 </RelativeLayout>
