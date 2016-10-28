@@ -6,7 +6,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.example.stosh.mylessonsandroid"
+        applicationId "com.stosh.vk_answering"
         minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
@@ -32,4 +32,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile files('libs/SheetHandler.jar')
+    compile project(':vksdk_library')
 }

@@ -8,51 +8,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.stosh.mylessonsandroid.Main">
+    tools:context="com.stosh.vk_answering.Main">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/textView_text"
-        android:textSize="@dimen/textView_textSize" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/editText_marginTop"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/editText_text" />
 
     <Button
         android:id="@+id/button_start"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/spinner"
-        android:layout_marginTop="@dimen/button_start"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/button_marginTop"
         android:background="@drawable/start" />
 
-    <Button
-        android:id="@+id/button_stop"
-        android:layout_width="@dimen/button_width"
-        android:layout_height="@dimen/button_height"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/button_start"
-        android:background="@drawable/stop" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/spinner_marginTop" />
 </RelativeLayout>

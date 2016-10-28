@@ -1,4 +1,4 @@
-package com.example.stosh.mylessonsandroid;
+package com.stosh.vk_answering;
 
 import org.junit.Test;
 
