@@ -12,12 +12,30 @@
 
 
     <Button
-        android:id="@+id/button_start"
+        android:id="@+id/button_login"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/button_marginTop"
-        android:background="@drawable/start" />
+        android:layout_marginTop="60dp"
+        android:text="@string/button_login" />
+
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/button_logout"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/button_start_service"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignStart="@+id/button_login"
+        android:layout_below="@+id/button_login"
+        android:text="@string/button_start_service"
+        android:visibility="gone" />
 
 </RelativeLayout>
