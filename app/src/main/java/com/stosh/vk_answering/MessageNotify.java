@@ -18,21 +18,25 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.Response;
-import retrofit.Retrofit;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class MessageNotify extends Service {
 
-    private final int STOP_SERVICE = 2;
     private final int START_SERVICE = 1;
+    private final int STOP_SERVICE = 2;
     private final int ID_NOTIFICATION = 1337;
-    private final String URL = "https://api.vk.com/";
+    private final String URL = "https://api.vk.com/method/";
 
+    private  String ACCESS_TOKEN;
     private Gson gson = new GsonBuilder().create();
 
     private Retrofit retrofit = new Retrofit.Builder()
-            //.addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(URL)
             .build();
 
@@ -56,10 +60,13 @@ public class MessageNotify extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent.getIntExtra("Start_Service", 2) == START_SERVICE) {
+        if (intent.getIntExtra("Start_Service", 0) == START_SERVICE) {
             if (builder == null) {
+                ACCESS_TOKEN = intent.getStringExtra("ACCESS_TOKEN");
                 onStartForeground();
                 getLongPollServer();
+
+                Log.d("Service"," "+ ACCESS_TOKEN);
             } else {
                 return super.onStartCommand(intent, flags, startId);
             }
@@ -104,43 +111,33 @@ public class MessageNotify extends Service {
     private void getLongPollServer() {
         Log.d("Service", "Start");
 
+        final String METHOD = "messages.getLongPollServer";
         Map<String, String> mapJson = new HashMap<>();
-        mapJson.put("user_ids", "210700286");
-        mapJson.put("fields", "bdate");
+        mapJson.put("use_ssl", "0");
+        mapJson.put("need_pts", "0");
+        mapJson.put("access_token", ACCESS_TOKEN);
         mapJson.put("v", "5.59");
 
-        final Call<Map<String, String>> call = retro.translate(mapJson);
-
-
+        final Call<ResponseBody> call = retro.messageGetLongPollServer(METHOD, mapJson);
         Log.d("Service", "call.execute");
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Response<Map<String, String>> response = call.execute();
+                    Response<ResponseBody> response = call.execute();
+                    Log.d("Service", "" + response.body().string());
+                    Map<String, String> map = gson.fromJson(response.body().string(), Map.class);
+                    Log.d("Service","" + map);
 
-                    Log.d("Service", "call.execute");
 
-                    Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
-
-                    Log.d("Service", "Gson");
-
-                    for (Map.Entry e : map.entrySet()) {
-                        System.out.println(e.getKey() + " " + e.getValue());
-                    }
-
-                } catch (
-                        IOException e
-                        )
-
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
+                    Log.d("Service", " " + e);
                 }
             }
-        }
-
-        );
+        });
         t.start();
     }
-
 }
+
+

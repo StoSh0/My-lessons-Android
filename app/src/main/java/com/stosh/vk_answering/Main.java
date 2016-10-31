@@ -3,6 +3,7 @@ package com.stosh.vk_answering;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class Main extends AppCompatActivity {
 
     private final int ID_START_SERVICE = 1;
 
+    private  String ACCESS_TOKEN;
     private Intent intentServiceNotify;
     private Unbinder Unbinder;
     private String[] scope = new String[]{
@@ -30,7 +32,8 @@ public class Main extends AppCompatActivity {
             VKScope.PHOTOS,
             VKScope.NOHTTPS,
             VKScope.MESSAGES,
-            VKScope.DOCS
+            VKScope.DOCS,
+            VKScope.NOHTTPS
     };
 
     @BindView(R.id.button_login)
@@ -62,6 +65,7 @@ public class Main extends AppCompatActivity {
             case R.id.button_start_service:
                 intentServiceNotify = new Intent(this, MessageNotify.class);
                 intentServiceNotify.putExtra("Start_Service", ID_START_SERVICE);
+                intentServiceNotify.putExtra("ACCESS_TOKEN", ACCESS_TOKEN);
                 startService(intentServiceNotify);
                 break;
         }
@@ -79,6 +83,8 @@ public class Main extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 changeBtnLogin();
+                ACCESS_TOKEN = res.accessToken;
+                Log.d("Service"," "+ ACCESS_TOKEN);
             }
 
             @Override

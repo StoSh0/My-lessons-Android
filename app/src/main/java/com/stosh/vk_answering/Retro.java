@@ -1,11 +1,14 @@
 package com.stosh.vk_answering;
 
+
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.http.FieldMap;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.POST;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
 
 /**
  * Created by StoSh on 29-Oct-16.
@@ -13,6 +16,7 @@ import retrofit.http.POST;
 
 public interface Retro {
     @FormUrlEncoded
-    @POST("method/user.get")
-    Call translate (@FieldMap Map<String, String> map);
+    @POST("method")
+    Call<ResponseBody> messageGetLongPollServer(@Field("method")String method, @FieldMap Map<String, String> map);
+
 }
