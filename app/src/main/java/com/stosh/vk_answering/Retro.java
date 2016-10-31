@@ -18,5 +18,4 @@ public interface Retro {
     @FormUrlEncoded
     @POST("method")
     Call<ResponseBody> messageGetLongPollServer(@Field("method")String method, @FieldMap Map<String, String> map);
-
 }

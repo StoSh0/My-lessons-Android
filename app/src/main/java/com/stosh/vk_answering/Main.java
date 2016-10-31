@@ -30,10 +30,8 @@ public class Main extends AppCompatActivity {
             VKScope.FRIENDS,
             VKScope.WALL,
             VKScope.PHOTOS,
-            VKScope.NOHTTPS,
             VKScope.MESSAGES,
             VKScope.DOCS,
-            VKScope.NOHTTPS
     };
 
     @BindView(R.id.button_login)
@@ -98,9 +96,7 @@ public class Main extends AppCompatActivity {
 
     private void changeBtnLogin(){
         button_login.setVisibility(View.GONE);
-
         button_logout.setVisibility(View.VISIBLE);
-
         button_start_service.setVisibility(View.VISIBLE);
     }
 
@@ -108,9 +104,7 @@ public class Main extends AppCompatActivity {
         VKSdk.logout();
 
         button_login.setVisibility(View.VISIBLE);
-
         button_logout.setVisibility(View.GONE);
-
         button_start_service.setVisibility(View.GONE);
         if (intentServiceNotify != null) stopService(intentServiceNotify);
     }
