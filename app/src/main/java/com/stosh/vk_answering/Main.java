@@ -3,7 +3,6 @@ package com.stosh.vk_answering;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -23,7 +22,6 @@ public class Main extends AppCompatActivity {
 
     private final int ID_START_SERVICE = 1;
 
-    private  String ACCESS_TOKEN;
     private Intent intentServiceNotify;
     private Unbinder Unbinder;
     private String[] scope = new String[]{
@@ -57,22 +55,20 @@ public class Main extends AppCompatActivity {
                 break;
 
             case R.id.button_logout:
-                logout();
+                VKSdk.logout();
+
+                button_login.setVisibility(View.VISIBLE);
+                button_logout.setVisibility(View.GONE);
+                button_start_service.setVisibility(View.GONE);
+                if (intentServiceNotify != null) stopService(intentServiceNotify);
                 break;
 
             case R.id.button_start_service:
                 intentServiceNotify = new Intent(this, MessageNotify.class);
                 intentServiceNotify.putExtra("Start_Service", ID_START_SERVICE);
-                intentServiceNotify.putExtra("ACCESS_TOKEN", ACCESS_TOKEN);
                 startService(intentServiceNotify);
                 break;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Unbinder.unbind();
     }
 
     @Override
@@ -80,9 +76,9 @@ public class Main extends AppCompatActivity {
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
             @Override
             public void onResult(VKAccessToken res) {
-                changeBtnLogin();
-                ACCESS_TOKEN = res.accessToken;
-                Log.d("Service"," "+ ACCESS_TOKEN);
+                button_login.setVisibility(View.GONE);
+                button_logout.setVisibility(View.VISIBLE);
+                button_start_service.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -94,19 +90,11 @@ public class Main extends AppCompatActivity {
         }
     }
 
-    private void changeBtnLogin(){
-        button_login.setVisibility(View.GONE);
-        button_logout.setVisibility(View.VISIBLE);
-        button_start_service.setVisibility(View.VISIBLE);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Unbinder.unbind();
     }
 
-    private void logout(){
-        VKSdk.logout();
-
-        button_login.setVisibility(View.VISIBLE);
-        button_logout.setVisibility(View.GONE);
-        button_start_service.setVisibility(View.GONE);
-        if (intentServiceNotify != null) stopService(intentServiceNotify);
-    }
 }
 

@@ -17,7 +17,6 @@ import retrofit2.http.Path;
 public interface Retro {
 
     @FormUrlEncoded
-    @POST("{method}")
-    Call<ResponseBody> messageGetLongPollServer(@Path("method")String method, @FieldMap Map<String, String> map);
-    Call<ResponseBody> longPoll(@FieldMap Map<String,String> map);
+    @POST("{domain}")
+    Call<ResponseBody> longPoll(@Path("domain") String domain, @FieldMap Map<String,String> map);
 }

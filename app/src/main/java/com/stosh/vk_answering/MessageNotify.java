@@ -13,7 +13,11 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vk.sdk.api.VKParameters;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +27,7 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -32,25 +37,15 @@ public class MessageNotify extends Service {
 
     private final int START_SERVICE = 1;
     private final int STOP_SERVICE = 2;
-    private final int ID_NOTIFICATION = 1337;
-    private final String URL = "https://api.vk.com/method/";
+    private final int ID_NOTIFICATION_SERVICE = 3;
+    private final int ID_NOTIFICATION_MESSAGE = 4;
+    NotificationManager notificationManager;
 
-    private String ACCESS_TOKEN;
     private String key;
     private String server;
     private String ts;
 
-    private Notification builder;
-    private NotificationManager notificationManager;
-
-    private Gson gson = new GsonBuilder().create();
-
-    private Retrofit retrofit = new Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl(URL)
-            .build();
-
-    private Retro retro = retrofit.create(Retro.class);
+    private static boolean checkStart = false;
 
     @Nullable
     @Override
@@ -67,87 +62,133 @@ public class MessageNotify extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent.getIntExtra("Start_Service", 0) == START_SERVICE) {
-            if (builder == null) {
-                ACCESS_TOKEN = intent.getStringExtra("ACCESS_TOKEN");
-                onStartForeground();
-                if (key == null | server == null || ts == null) getLongPollServer();
-            } else {
-                return super.onStartCommand(intent, flags, startId);
-            }
-        } else if (intent.getIntExtra("Close", 1) == STOP_SERVICE) {
-            stopSelf();
-            return super.onStartCommand(intent, flags, startId);
-        }
+        if (intent.getIntExtra("Start_Service", 0) == START_SERVICE && checkStart == false) onStartForeground();
+        if (intent.getIntExtra("Close", 1) == STOP_SERVICE) stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("Service", "Destroy");
-
-        notificationManager.cancel(ID_NOTIFICATION);
-    }
-
-
     private void onStartForeground() {
-
-        Intent notificationIntent = new Intent(this, MessageNotify.class);
-
-        notificationIntent.putExtra("Close", STOP_SERVICE);
+        Intent notificationIntent = new Intent(this, MessageNotify.class)
+                .putExtra("Close", STOP_SERVICE);
 
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
                 notificationIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        builder = new NotificationCompat.Builder(this)
+        Notification builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.start)
                 .setContentTitle("Сервіс запитів на сервер")
                 .setContentText("Слухаю події..")
-                .addAction(R.drawable.stop, "Stop", pendingIntent).build();
+                .addAction(R.drawable.stop, "Stop", pendingIntent)
+                .build();
 
-        notificationManager = (NotificationManager)
-                getSystemService(Context.NOTIFICATION_SERVICE);
-        startForeground(ID_NOTIFICATION, builder);
+        startForeground(ID_NOTIFICATION_SERVICE, builder);
         Log.d("Service", "StartForeground");
-
+        checkStart = true;
+        getLongPollServer();
     }
 
     private void getLongPollServer() {
-        Log.d("Service", "Start");
-
-        final String METHOD = "messages.getLongPollServer";
-        final Map<String, String> mapParam = new HashMap<>();
-        mapParam.put("use_ssl", "0");
-        mapParam.put("need_pts", "0");
-        mapParam.put("access_token", ACCESS_TOKEN);
-        mapParam.put("v", "5.59");
-
-        final Call<ResponseBody> call = retro.messageGetLongPollServer(METHOD, mapParam);
-        Log.d("Service", "call.execute");
-        Thread t = new Thread(new Runnable() {
+        Log.d("Service", "getLongPollServer");
+        VKRequest request = new VKRequest("messages.getLongPollServer", VKParameters.from("use_ssl", "0", "need_pts", "0"));
+        request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
-            public void run() {
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
                 try {
-                    Response<ResponseBody> response = call.execute();
-                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    JSONObject jsonObject = new JSONObject(response.responseString);
                     JSONObject responseSt = jsonObject.getJSONObject("response");
-
                     key = responseSt.getString("key");
                     server = responseSt.getString("server");
                     ts = responseSt.getString("ts");
                     Log.d("Service", "key = " + responseSt.getString("key"));
                     Log.d("Service", "server = " + responseSt.getString("server"));
                     Log.d("Service", "ts = " + responseSt.getString("ts"));
+                    getLongPoll();
+
                 } catch (JSONException e) {
-                    Log.d("Service", " " + e);
-                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
-        t.start();
+    }
+
+    private void getLongPoll() {
+        Log.d("Service", "LongPoll");
+
+        final Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl("https://imv4.vk.com/")
+                .build();
+
+        Retro retro = retrofit.create(Retro.class);
+
+        final Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("act", "a_check");
+        paramMap.put("key", key);
+        paramMap.put("ts", ts);
+        paramMap.put("wait", "25");
+        paramMap.put("mode", "2");
+        paramMap.put("v", "1");
+        Log.d("Service", "1");
+        String domain = server.substring(12);
+        final Call<ResponseBody> call = retro.longPoll(domain, paramMap);
+        Log.d("Service", "2");
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    Log.d("Service", "3 " + jsonObject);
+                    ts = jsonObject.getString("ts");
+
+                    JSONArray array = jsonObject.getJSONArray("updates");
+                    Log.d("Service", " array= " + array);
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONArray array1 = array.getJSONArray(i);
+                        Log.d("Service", " array1= " + array1);
+                        if (array1.getString(0).equals("4")) createNotifyMessage();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (checkStart == true) getLongPoll();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("Service", "5" + t);
+                if (checkStart == true) getLongPoll();
+            }
+        });
+    }
+
+    private void createNotifyMessage() {
+        Notification builder = new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.start)
+                .setContentTitle("Повідомлення")
+                .setContentText("Нове повідомлення")
+                .setAutoCancel(true)
+                .build();
+
+        notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(ID_NOTIFICATION_MESSAGE, builder);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("Service", "Destroy");
+        checkStart = false;
+        notificationManager.cancelAll();
     }
 }
+
+
 
 
