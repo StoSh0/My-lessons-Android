@@ -38,7 +38,8 @@ public class MessageNotify extends Service {
     private final int START_SERVICE = 1;
     private final int STOP_SERVICE = 2;
     private final int ID_NOTIFICATION_SERVICE = 3;
-    private final int ID_NOTIFICATION_MESSAGE = 4;
+    private final int ID_NOTIFICATION_IN_MESSAGE = 4;
+    private final int ID_NOTIFICATION_OUT_MESSAGE = 5;
     NotificationManager notificationManager;
 
     private String key;
@@ -148,8 +149,12 @@ public class MessageNotify extends Service {
                     Log.d("Service", " array= " + array);
                     for (int i = 0; i < array.length(); i++) {
                         JSONArray array1 = array.getJSONArray(i);
-                        Log.d("Service", " array1= " + array1);
-                        if (array1.getString(0).equals("4")) createNotifyMessage();
+                        if (array1.getString(0).equals("4")) {
+                            String key = array1.getString(2);
+                            String textMSG = array1.getString(6);
+                            if (key.equals("19") || key.equals("51"))crateNotifyOutMessage(textMSG);
+                            else createNotifyInMessage(textMSG);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -167,17 +172,30 @@ public class MessageNotify extends Service {
         });
     }
 
-    private void createNotifyMessage() {
+    private void createNotifyInMessage(String txtMsg) {
         Notification builder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.start)
                 .setContentTitle("Повідомлення")
-                .setContentText("Нове повідомлення")
+                .setContentText("Нове повідомлення: " + txtMsg)
                 .setAutoCancel(true)
                 .build();
 
         notificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(ID_NOTIFICATION_MESSAGE, builder);
+        notificationManager.notify(ID_NOTIFICATION_IN_MESSAGE, builder);
+    }
+
+    private void crateNotifyOutMessage(String txtMsg){
+        Notification builder = new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.start)
+                .setContentTitle("Повідомлення")
+                .setContentText("Відправлено повідомлення: " + txtMsg)
+                .setAutoCancel(true)
+                .build();
+
+        notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(ID_NOTIFICATION_OUT_MESSAGE, builder);
     }
 
     @Override
