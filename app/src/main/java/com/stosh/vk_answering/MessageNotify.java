@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
@@ -63,7 +64,8 @@ public class MessageNotify extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent.getIntExtra("Start_Service", 0) == START_SERVICE && checkStart == false) onStartForeground();
+        if (intent.getIntExtra("Start_Service", 0) == START_SERVICE && checkStart == false)
+            onStartForeground();
         if (intent.getIntExtra("Close", 1) == STOP_SERVICE) stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -152,8 +154,13 @@ public class MessageNotify extends Service {
                         if (array1.getString(0).equals("4")) {
                             String key = array1.getString(2);
                             String textMSG = array1.getString(6);
-                            if (key.equals("19") || key.equals("51"))crateNotifyOutMessage(textMSG);
-                            else createNotifyInMessage(textMSG);
+                            if (key.equals("19") || key.equals("51") || key.equals("3"))crateNotifyOutMessage(textMSG);
+                            /*else createNotifyInMessage(textMSG);*/
+                            if (array1.getString(3).equals("387086905") && key.equals("17")) {
+                                sendMessage();
+                                createNotifyInMessage(textMSG);
+
+                            }
                         }
                     }
                 } catch (JSONException e) {
@@ -185,7 +192,7 @@ public class MessageNotify extends Service {
         notificationManager.notify(ID_NOTIFICATION_IN_MESSAGE, builder);
     }
 
-    private void crateNotifyOutMessage(String txtMsg){
+    private void crateNotifyOutMessage(String txtMsg) {
         Notification builder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.start)
                 .setContentTitle("Повідомлення")
@@ -196,6 +203,23 @@ public class MessageNotify extends Service {
         notificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(ID_NOTIFICATION_OUT_MESSAGE, builder);
+    }
+
+    private void sendMessage() {
+        VKRequest request = new VKRequest("messages.send", VKParameters.from("user_id", "387086905", "message", "Test Message"));
+        request.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+                Log.d("Service", "Message" + response);
+            }
+
+            @Override
+            public void onError(VKError error) {
+                super.onError(error);
+                Log.d("Service", "MessageError" + error);
+            }
+        });
     }
 
     @Override
