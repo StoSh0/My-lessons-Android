@@ -64,7 +64,7 @@ public class Main extends AppCompatActivity {
                 break;
 
             case R.id.button_start_service:
-                intentServiceNotify = new Intent(this, MessageNotify.class);
+                intentServiceNotify = new Intent(this, ListenerVk.class);
                 intentServiceNotify.putExtra("Start_Service", ID_START_SERVICE);
                 startService(intentServiceNotify);
                 break;

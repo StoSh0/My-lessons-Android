@@ -1,7 +1,8 @@
-package com.stosh.vk_answering;
+package com.stosh.vk_answering.VkApi;
 
 import android.content.Intent;
 
+import com.stosh.vk_answering.Main;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
@@ -18,6 +19,7 @@ public class Application extends android.app.Application {
             }
         }
     };
+
     @Override
     public void onCreate() {
         super.onCreate();
